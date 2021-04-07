@@ -7,6 +7,8 @@
 package labs.pm.data;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Objects;
 
 import static java.math.RoundingMode.HALF_UP;
 import static labs.pm.data.Rating.*;
@@ -24,7 +26,7 @@ import static labs.pm.data.Rating.*;
  * @version 4.0
  */
 
-public class Product {
+public abstract class Product {
 
     /**
      * A constant that defines a {@link java.math.BigDecimal BigDecimal} value
@@ -38,18 +40,18 @@ public class Product {
     private BigDecimal price;
     private Rating rating;
 
-    public Product() {
-        this(0, "no name", BigDecimal.ZERO);
-    }
+//    Product() {
+//        this(0, "no name", BigDecimal.ZERO);
+//    }
 
-    public Product(int id, String name, BigDecimal price, Rating rating) {
+    Product(int id, String name, BigDecimal price, Rating rating) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.rating = rating;
     }
 
-    public Product(int id, String name, BigDecimal price) {
+    Product(int id, String name, BigDecimal price) {
         this(id, name, price, NOT_RATED);
     }
 
@@ -92,11 +94,39 @@ public class Product {
         return rating;
     }
 
-    public Product applyRating(Rating newRating) {
-        return new Product(this.id, this.name, this.price, newRating);
-        /*
-         *  Using this. is optional, cos method is inside the Product class,
-         * so it can directly access any of its private variables or methods
-         */
+    public abstract Product applyRating(Rating newRating);
+//    {
+//        return new Product(this.id, this.name, this.price, newRating);
+//        /*
+//         *  Using this. is optional, cos method is inside the Product class,
+//         * so it can directly access any of its private variables or methods
+//         */
+//    }
+
+    /**
+     * Get the value of the best before value of the product
+     * <p>
+     * return the value of bestBefore
+     */
+    public LocalDate getBestBefore() {
+        return LocalDate.now();
+    }
+
+    @Override
+    public String toString() {
+        return id + " " + name + " " + price + " " + getDiscount() + " " + getRating().getStars() + " " + getBestBefore();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Product)) return false;
+        Product product = (Product) obj;
+        return id == product.id && Objects.equals(name, product.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
