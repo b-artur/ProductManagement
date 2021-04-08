@@ -1,8 +1,8 @@
-/******************************************************************************
- * Copyright (c) 2021.                                                        *
- * This code is created on educational purposes and for sure is strongly      *
- * protected and something else about something else                          *
- ******************************************************************************/
+/*-----------------------------------------------------------------------------
+ - This code is created on educational purposes and for sure is strongly      -
+ - protected and something else about something else                          -
+ - Copyright (c) Artur Bakhmanov 2021.                                        -
+ -----------------------------------------------------------------------------*/
 
 package labs.pm.data;
 
@@ -20,13 +20,13 @@ import static labs.pm.data.Rating.*;
  * Each product has an id, name and price
  * <br>
  * Each product can have a discount calculated based on a
- * {@link DISCOUNT_RATE discount rate}
+ * {@link #DISCOUNT_RATE discount rate}
  *
  * @author Artur Bakhmanov
  * @version 4.0
  */
 
-public abstract class Product {
+public abstract class Product implements Rateable<Product> {
 
     /**
      * A constant that defines a {@link java.math.BigDecimal BigDecimal} value
@@ -82,7 +82,7 @@ public abstract class Product {
 
     /**
      * Calculates discount based on a product price and
-     * {@link DISCOUNT_RATE discount rate}
+     * {@link #DISCOUNT_RATE discount rate}
      *
      * @return a {@link java.math.BigDecimal BigDecimal} value of the discount
      */
@@ -90,11 +90,12 @@ public abstract class Product {
         return price.multiply(DISCOUNT_RATE).setScale(2, HALF_UP);
     }
 
+    @Override
     public Rating getRating() {
         return rating;
     }
 
-    public abstract Product applyRating(Rating newRating);
+//    public abstract Product applyRating(Rating newRating);
 //    {
 //        return new Product(this.id, this.name, this.price, newRating);
 //        /*

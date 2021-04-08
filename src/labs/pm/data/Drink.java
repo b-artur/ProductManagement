@@ -1,13 +1,12 @@
-/******************************************************************************
- * Copyright (c) 2021.                                                        *
- * This code is created on educational purposes and for sure is strongly      *
- * protected and something else about something else                          *
- ******************************************************************************/
+/*-----------------------------------------------------------------------------
+ - This code is created on educational purposes and for sure is strongly      -
+ - protected and something else about something else                          -
+ - Copyright (c) Artur Bakhmanov 2021.                                        -
+ -----------------------------------------------------------------------------*/
 
 package labs.pm.data;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 /**
@@ -21,7 +20,7 @@ public final class Drink extends Product {
 
     /**
      * Calculates discount based on a product price, product type and
-     * {@link DISCOUNT_RATE discount rate}
+     * {@link #DISCOUNT_RATE discount rate}
      *
      * @return a {@link BigDecimal BigDecimal} value of the discount
      */

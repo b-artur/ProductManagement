@@ -1,8 +1,8 @@
-/******************************************************************************
- * Copyright (c) 2021.                                                        *
- * This code is created on educational purposes and for sure is strongly      *
- * protected and something else about something else                          *
- ******************************************************************************/
+/*-----------------------------------------------------------------------------
+ - This code is created on educational purposes and for sure is strongly      -
+ - protected and something else about something else                          -
+ - Copyright (c) Artur Bakhmanov 2021.                                        -
+ -----------------------------------------------------------------------------*/
 
 package labs.pm.data;
 
