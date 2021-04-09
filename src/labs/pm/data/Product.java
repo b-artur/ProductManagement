@@ -123,7 +123,7 @@ public abstract class Product implements Rateable<Product> {
         if (this == obj) return true;
         if (!(obj instanceof Product)) return false;
         Product product = (Product) obj;
-        return id == product.id && Objects.equals(name, product.name);
+        return id == product.id; // && Objects.equals(name, product.name);
     }
 
     @Override
