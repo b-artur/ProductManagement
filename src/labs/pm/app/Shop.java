@@ -25,7 +25,7 @@ public class Shop {
      */
     public static void main(String[] args) {
 //        ProductManager pm = new ProductManager(new Locale("ru", "RU"));
-        ProductManager pm = new ProductManager("en-GB");
+        ProductManager pm = ProductManager.getInstance(); // new ProductManager("en-GB");
 //        System.out.println(ProductManager.getSupportedLocales());
 
 //        pm.createProduct(101, "Tea", BigDecimal.valueOf(1.99), Rating.NOT_RATED);
@@ -41,7 +41,7 @@ public class Shop {
 //        pm.printProductReport(164);
         pm.dumpData();
         pm.restoreData();
-        pm.printProductReport(164);
+        pm.printProductReport(164, "en-GB");
 
 //        pm.reviewProduct(101, Rating.FOUR_STAR, "Nice hot cup of tea");
 //        pm.reviewProduct(101, Rating.TWO_STAR, "Rather weak tea");
@@ -58,7 +58,7 @@ public class Shop {
 //        pm.printProductReport(101);
 
 //        pm.parseProduct("F,103,Cake,3.99,0,2020-04-12");
-        pm.printProductReport(103);
+        pm.printProductReport(103, "ru-RU");
 
 //        pm.changeLocale("zh-CH");
 //
@@ -66,7 +66,7 @@ public class Shop {
 //        pm.reviewProduct(102, Rating.THREE_STAR, "Coffee was ok");
 //        pm.reviewProduct(102, Rating.ONE_STAR, "Where is the milk?!");
 //        pm.reviewProduct(102, Rating.FIVE_STAR, "It's perfect with ten spoons of sugar!");
-        pm.printProductReport(102);
+        pm.printProductReport(102, "fr-FR");
 //
 //        pm.createProduct(103, "Cake", BigDecimal.valueOf(3.99), Rating.NOT_RATED, LocalDate.now().plusDays(2));
 //        pm.reviewProduct(103, Rating.FIVE_STAR, "Very nice cake");
@@ -91,9 +91,9 @@ public class Shop {
 //        pm.reviewProduct(106, Rating.ONE_STAR, "I don't get it!");
 //        pm.printProductReport(106);
 //
-        pm.printProducts(p -> p.getPrice().floatValue() < 4, (p1, p2) -> p2.getRating().ordinal() - p1.getRating().ordinal());
-
-        pm.getDiscounts().forEach((rating, discount) -> System.out.println(rating + "\t" + discount));
+//        pm.printProducts(p -> p.getPrice().floatValue() < 4, (p1, p2) -> p2.getRating().ordinal() - p1.getRating().ordinal());
+//
+//        pm.getDiscounts().forEach((rating, discount) -> System.out.println(rating + "\t" + discount));
 ////        pm.printProducts((p1, p2) -> p2.getPrice().compareTo(p1.getPrice()));
 //
 //        Comparator<Product> ratingSorter = (p1, p2) -> p2.getRating().ordinal() - p1.getRating().ordinal();

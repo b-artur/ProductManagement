@@ -51,20 +51,25 @@ public class ProductManager {
             "ru-RU", new ResourceFormatter(new Locale("ru", "RU")),
             "zh-CH", new ResourceFormatter(Locale.CHINA));
     private static final Logger logger = Logger.getLogger(ProductManager.class.getName());
+    private static final ProductManager pm = new ProductManager();
 
-
-    public ProductManager(Locale locale) {
-        this(locale.toLanguageTag());
+    public static ProductManager getInstance() {
+        return pm;
     }
 
-    public ProductManager(String languageTag) {
-        changeLocale(languageTag);
+
+//    public ProductManager(Locale locale) {
+//        this(locale.toLanguageTag());
+//    }
+
+    private ProductManager() {
+//        changeLocale(languageTag);
         loadAllData();
     }
 
-    public void changeLocale(String languageTag) {
-        formatter = formatters.getOrDefault(languageTag, formatters.get("en-GB"));
-    }
+//    public void changeLocale(String languageTag) {
+//        formatter = formatters.getOrDefault(languageTag, formatters.get("en-GB"));
+//    }
 
     public static Set<String> getSupportedLocales() {
         return formatters.keySet();
@@ -144,9 +149,9 @@ public class ProductManager {
 //                .orElseGet(() -> null);
     }
 
-    public void printProductReport(int id) {
+    public void printProductReport(int id, String languageTag) {
         try {
-            printProductReport(findProduct(id));
+            printProductReport(findProduct(id), languageTag);
         } catch (ProductManagerException e) {
             logger.log(Level.INFO, e.getMessage());
         } catch (IOException e) {
@@ -154,7 +159,8 @@ public class ProductManager {
         }
     }
 
-    public void printProductReport(Product product) throws IOException {
+    public void printProductReport(Product product, String languageTag) throws IOException {
+        ResourceFormatter formatter = formatters.getOrDefault(languageTag, formatters.get("en-GB"));
         List<Review> reviews = products.get(product);
         Collections.sort(reviews);
 //        StringBuilder txt = new StringBuilder();
@@ -185,7 +191,8 @@ public class ProductManager {
         }
     }
 
-    public void printProducts(Predicate<Product> filter, Comparator<Product> sorter) {
+    public void printProducts(Predicate<Product> filter, Comparator<Product> sorter, String languageTag) {
+        ResourceFormatter formatter = formatters.getOrDefault(languageTag, formatters.get("en-GB"));
 //        List<Product> productList = new ArrayList<>(products.keySet());
 //        productList.sort(sorter);
         StringBuilder txt = new StringBuilder();
@@ -305,7 +312,8 @@ public class ProductManager {
         return product;
     }
 
-    public Map<String, String> getDiscounts() {
+    public Map<String, String> getDiscounts(String languageTag) {
+        ResourceFormatter formatter = formatters.getOrDefault(languageTag, formatters.get("en-GB"));
         return products.keySet()
                 .stream()
                 .collect(
