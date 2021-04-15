@@ -6,11 +6,19 @@
 
 package labs.pm.app;
 
+import com.sun.source.doctree.SeeTree;
 import labs.pm.data.*;
+import org.w3c.dom.ls.LSOutput;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * {@code Shop} class represents an application that manages Products
@@ -24,8 +32,48 @@ public class Shop {
      *
      */
     public static void main(String[] args) {
-//        ProductManager pm = new ProductManager(new Locale("ru", "RU"));
         ProductManager pm = ProductManager.getInstance(); // new ProductManager("en-GB");
+
+        AtomicInteger clientCount = new AtomicInteger();
+        Callable<String> client = () -> {
+            String clientId = "Client " + clientCount.incrementAndGet();
+            String threadName = Thread.currentThread().getName();
+            int productId = ThreadLocalRandom.current().nextInt(6) + 101;
+            String languageTag = ProductManager.getSupportedLocales()
+                    .stream()
+                    .skip(ThreadLocalRandom.current().nextInt(3))
+                    .findFirst().get();
+            StringBuilder log = new StringBuilder();
+            log.append(clientId + " " + threadName + "\n-\tstart of log\t-\n");
+            log.append(pm.getDiscounts(languageTag)
+                    .entrySet()
+                    .stream()
+                    .map(entry -> entry.getKey() + "\t" + entry.getValue())
+                    .collect(Collectors.joining("\n")));
+            Product product = pm.reviewProduct(productId, Rating.FOUR_STAR, "Yet another review");
+            log.append((product != null) ? "\nProduct " + productId + " reviewed\n" : "\nProduct " + productId + " not reviewed\n");
+            pm.printProductReport(productId, languageTag, clientId);
+            log.append(clientId + " generated report for  " + productId + " product");
+            log.append("\n-\tend of log\t-\n");
+            return log.toString();
+        };
+        List<Callable<String>> clients = Stream.generate(() -> client).limit(2).collect(Collectors.toList());
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        try {
+            List<Future<String>> results = executorService.invokeAll(clients);
+            executorService.shutdown();
+            results.stream().forEach(result -> {
+                try {
+                    System.out.println(result.get());
+                } catch (InterruptedException | ExecutionException e) {
+                    Logger.getLogger(Shop.class.getName()).log(Level.SEVERE, "Error retrieving client log", e);
+                }
+            });
+        } catch (InterruptedException e) {
+            Logger.getLogger(Shop.class.getName()).log(Level.SEVERE, "Error invoking client", e);
+        }
+//        ProductManager pm = new ProductManager(new Locale("ru", "RU"));
+
 //        System.out.println(ProductManager.getSupportedLocales());
 
 //        pm.createProduct(101, "Tea", BigDecimal.valueOf(1.99), Rating.NOT_RATED);
@@ -33,15 +81,15 @@ public class Shop {
 //        pm.parseProduct("D,101,Tea,1.99,0");
 //        pm.printProductReport(101);
 
-        pm.createProduct(164, "Kombucha", BigDecimal.valueOf(1.99), Rating.NOT_RATED);
-        pm.reviewProduct(164, Rating.TWO_STAR, "Looks like tea but is it?");
-        pm.reviewProduct(164, Rating.FOUR_STAR, "Fine tea");
-        pm.reviewProduct(164, Rating.FOUR_STAR, "This is not tea");
-        pm.reviewProduct(164, Rating.FIVE_STAR, "Perfect!");
-//        pm.printProductReport(164);
-        pm.dumpData();
-        pm.restoreData();
-        pm.printProductReport(164, "en-GB");
+//        pm.createProduct(164, "Kombucha", BigDecimal.valueOf(1.99), Rating.NOT_RATED);
+//        pm.reviewProduct(164, Rating.TWO_STAR, "Looks like tea but is it?");
+//        pm.reviewProduct(164, Rating.FOUR_STAR, "Fine tea");
+//        pm.reviewProduct(164, Rating.FOUR_STAR, "This is not tea");
+//        pm.reviewProduct(164, Rating.FIVE_STAR, "Perfect!");
+////        pm.printProductReport(164);
+//        pm.dumpData();
+//        pm.restoreData();
+//        pm.printProductReport(164, "en-GB");
 
 //        pm.reviewProduct(101, Rating.FOUR_STAR, "Nice hot cup of tea");
 //        pm.reviewProduct(101, Rating.TWO_STAR, "Rather weak tea");
@@ -58,7 +106,7 @@ public class Shop {
 //        pm.printProductReport(101);
 
 //        pm.parseProduct("F,103,Cake,3.99,0,2020-04-12");
-        pm.printProductReport(103, "ru-RU");
+//        pm.printProductReport(103, "ru-RU");
 
 //        pm.changeLocale("zh-CH");
 //
@@ -66,7 +114,7 @@ public class Shop {
 //        pm.reviewProduct(102, Rating.THREE_STAR, "Coffee was ok");
 //        pm.reviewProduct(102, Rating.ONE_STAR, "Where is the milk?!");
 //        pm.reviewProduct(102, Rating.FIVE_STAR, "It's perfect with ten spoons of sugar!");
-        pm.printProductReport(102, "fr-FR");
+//        pm.printProductReport(102, "fr-FR");
 //
 //        pm.createProduct(103, "Cake", BigDecimal.valueOf(3.99), Rating.NOT_RATED, LocalDate.now().plusDays(2));
 //        pm.reviewProduct(103, Rating.FIVE_STAR, "Very nice cake");

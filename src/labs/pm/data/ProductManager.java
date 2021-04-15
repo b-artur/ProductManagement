@@ -169,7 +169,7 @@ public class ProductManager {
 //        return result;
         try {
             readLock.lock();
-            products.keySet()
+            return products.keySet()
                     .stream()
                     .filter(p -> p.getId() == id)
                     .findFirst()
@@ -190,7 +190,7 @@ public class ProductManager {
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Error printing product report " + e.getMessage(), e);
         }
-        final {
+        finally {
             readLock.unlock();
         }
     }
