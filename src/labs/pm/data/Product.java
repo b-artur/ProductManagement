@@ -41,9 +41,6 @@ public abstract class Product implements Rateable<Product>, Serializable {
     private BigDecimal price;
     private Rating rating;
 
-//    Product() {
-//        this(0, "no name", BigDecimal.ZERO);
-//    }
 
     Product(int id, String name, BigDecimal price, Rating rating) {
         this.id = id;
@@ -60,26 +57,15 @@ public abstract class Product implements Rateable<Product>, Serializable {
         return id;
     }
 
-//    public void setId(final int id) {
-//        this.id = id;
-//    }
-
     public String getName() {
         return name;
     }
 
-//    public void setName(final String name) {
-//        this.name = name;
-//    }
 
     public BigDecimal getPrice() {
         return price;
     }
 
-//    public void setPrice(final BigDecimal price) {
-////        price = BigDecimal.ONE;
-//        this.price = price;
-//    }
 
     /**
      * Calculates discount based on a product price and
@@ -96,14 +82,6 @@ public abstract class Product implements Rateable<Product>, Serializable {
         return rating;
     }
 
-//    public abstract Product applyRating(Rating newRating);
-//    {
-//        return new Product(this.id, this.name, this.price, newRating);
-//        /*
-//         *  Using this. is optional, cos method is inside the Product class,
-//         * so it can directly access any of its private variables or methods
-//         */
-//    }
 
     /**
      * Get the value of the best before value of the product

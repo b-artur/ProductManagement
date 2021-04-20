@@ -12,7 +12,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -23,7 +22,6 @@ import java.time.format.DateTimeParseException;
 import java.time.format.FormatStyle;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 import java.util.logging.Level;
@@ -37,8 +35,7 @@ import java.util.stream.Collectors;
 public class ProductManager {
 
     private Map<Product, List<Review>> products = new HashMap<>();
-    //    private Product product;
-//    private Review[] reviews = new Review[5];
+
     private ResourceFormatter formatter;
     private final ResourceBundle config = ResourceBundle.getBundle("labs.pm.data.config");
     private final MessageFormat reviewFormat = new MessageFormat(config.getString("review.data.format"));
@@ -63,19 +60,9 @@ public class ProductManager {
         return pm;
     }
 
-
-//    public ProductManager(Locale locale) {
-//        this(locale.toLanguageTag());
-//    }
-
     private ProductManager() {
-//        changeLocale(languageTag);
         loadAllData();
     }
-
-//    public void changeLocale(String languageTag) {
-//        formatter = formatters.getOrDefault(languageTag, formatters.get("en-GB"));
-//    }
 
     public static Set<String> getSupportedLocales() {
         return formatters.keySet();
@@ -124,9 +111,6 @@ public class ProductManager {
     }
 
     private Product reviewProduct(Product product, Rating rating, String comments) {
-//        if (reviews[reviews.length - 1] != null) {
-//            reviews = Arrays.copyOf(reviews, reviews.length + 5);
-//        }
         List<Review> reviews = products.get(product);
         products.remove(product, reviews);
         reviews.add(new Review(rating, comments));
@@ -137,36 +121,11 @@ public class ProductManager {
                                         .mapToInt(r -> r.getRating().ordinal())
                                         .average()
                                         .orElse(0))));
-//        int sum = 0;
-//        for (Review review : reviews) {
-//            sum += review.getRating().ordinal();
-//        }
-//        product = product.applyRating(Rateable.convert(Math.round((float) sum / reviews.size())));
-//        int sum = 0, i = 0;
-//        boolean reviewed = false;
-//        while (i < reviews.length && !reviewed) {
-//            if (reviews[i] == null) {
-//                reviews[i] = new Review(rating, comments);
-//                reviewed = true;
-//            }
-//            sum += reviews[i].getRating().ordinal();
-//            i++;
-//        }
-//        review = new Review(rating, comments);
-//        this.product = product.applyRating(rating);
         products.put(product, reviews);
         return product;
     }
 
     public Product findProduct(int id) throws ProductManagerException {
-//        Product result = null;
-//        for (Product product : products.keySet()) {
-//            if (product.getId() == id) {
-//                result = product;
-//                break;
-//            }
-//        }
-//        return result;
         try {
             readLock.lock();
             return products.keySet()
@@ -177,8 +136,6 @@ public class ProductManager {
         } finally {
             readLock.unlock();
         }
-//                .get();
-//                .orElseGet(() -> null);
     }
 
     public void printProductReport(int id, String languageTag, String client) {
@@ -198,8 +155,7 @@ public class ProductManager {
     private void printProductReport(Product product, String languageTag, String client) throws IOException {
         ResourceFormatter formatter = formatters.getOrDefault(languageTag, formatters.get("en-GB"));
         List<Review> reviews = products.get(product);
-        Collections.sort(reviews);
-//        StringBuilder txt = new StringBuilder();
+//        Collections.sort(reviews);
         Path productFile = reportsFolder.resolve(MessageFormat.format(config.getString("report.file"), product.getId(), client));
         System.out.println(productFile.toAbsolutePath());
         try (PrintWriter out = new PrintWriter(new OutputStreamWriter(Files.newOutputStream(productFile, StandardOpenOption.CREATE), "UTF-8"))) {
@@ -207,23 +163,10 @@ public class ProductManager {
             if (reviews.isEmpty()) {
                 out.append(formatter.getText("no.reviews") + System.lineSeparator());
             } else {
-                out.append(reviews.stream()
+                out.append(reviews.stream().sorted()
                         .map(r -> formatter.formatReview(r) + System.lineSeparator())
                         .collect(Collectors.joining()));
             }
-//        for (Review review : reviews) {
-////            if (review == null) {
-////                break;
-////            }
-//            txt.append(formatter.formatReview(review));
-//            txt.append("\n");
-//
-//        }
-//        if (reviews.isEmpty()) {
-//            txt.append(formatter.getText("no.reviews"));
-//            txt.append("\n");
-//        }
-//            System.out.println(txt);
         }
     }
 
@@ -231,18 +174,12 @@ public class ProductManager {
         try {
             readLock.lock();
             ResourceFormatter formatter = formatters.getOrDefault(languageTag, formatters.get("en-GB"));
-//        List<Product> productList = new ArrayList<>(products.keySet());
-//        productList.sort(sorter);
             StringBuilder txt = new StringBuilder();
             products.keySet()
                     .stream()
                     .sorted(sorter)
                     .filter(filter)
                     .forEach(p -> txt.append(formatter.formatProduct(p) + "\n"));
-//        for (Product product : productList) {
-//            txt.append(formatter.formatProduct(product));
-//            txt.append("\n");
-//        }
             System.out.println(txt);
         } finally {
             readLock.unlock();
